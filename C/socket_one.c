@@ -1,26 +1,51 @@
-struct addrinfo {
-	int 						ai_flags; // AI_PASSIVE, AI_CANONNAME, etc.
-	int 						ai_family; // AF_INET, AF_INRT6, AF_UNSPEC specifies which Ip version you want to use
-	int 						ai_socktype; // SOCK_STREAM, SOCK_DGRAM (tcp or udp)
-	int 						ai_protocol; // use 0 for "any"
-	size_t 					ai_addrlen; // size of ai_addr in bytes
-	struct sockaddr *ai_addr; // struct sockaddr_in or _in6
-	char 						*ai_canonname; // full canonical hostname
+/**
+This is some stuff to practice writing these methods.
+It helps me learn, man.
+  */
 
-	struct addrinfo *ai_next; // linked list, next node
-}
+#include <stdio.h>
+#include <stdint.h>
+typedef uint32_t u_int32_t;
+
+struct addrinfo {
+	int	ai_flags;
+	int	ai_family;
+	int	ai_socktype;
+	int	ai_protocol;
+	size_t	ai_addrlen;
+	struct sockaddr	*ai_addr;
+	char	*ai_cannoname;
+	struct addrinfo	*ai_next;
+};
 
 struct sockaddr {
-	unsigned short		sa_family;		// address family, AF_xxx (likely AF_INET or AF_INET6)
-	char 							sa_data[14];	// 14 bytes of protocol address
-}
+	unsigned short	sa_family;
+	char	sa_data[14];
+};
 
-// Use this for IPv4
 struct sockaddr_in {
-	short int 						sin_family; // Address family, AF_INET
-	unsigned short int 		sin_port; // Port number
-	struct in_addr				sin_addr: // Internet address
-	unsigned char					sin_zero[8] // Same size as struct sockaddr
-}
+	short int	sin_family;
+	unsigned short int	sin_port;
+	struct in_addr	sin_addr;
+	unsigned char	sin_zero[8];
+};
 
+struct in_addr {
+	uint32_t	s_addr;
+};
 
+struct sockaddr_in6 {
+	u_int16_t	sin6_family;
+	u_int16_t	sin6_port;
+	u_int32_t	sin6_flowinfo;
+	struct in6_addr	sin6_addr;
+	u_int32_t	sin6_scope_id;
+};
+
+struct in6_addr {
+	unsigned char s6_addr[16];
+};
+
+struct sockaddr_storage {
+	sa_family_t	ss_family;
+};
