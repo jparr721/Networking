@@ -183,5 +183,5 @@ def main():
 	if listen:
 		server_loop()
 
-
+main()
 
