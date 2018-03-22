@@ -13,6 +13,9 @@ All other dependencies will be handled by the install script
 
 ### Steps
 `chmod 777 setup.sh`
+
 `./setup.sh`
+
 `python(3) setup.py`
+
 `telr [options]`
