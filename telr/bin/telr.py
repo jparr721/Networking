@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import gspread
 import argparse
 from oauth2client.service_account import ServiceAccountCredentials
@@ -6,14 +7,14 @@ import datetime
 import os
 import sys
 import wifi
-import urllib2
+import urllib
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 client_secret_path = ""
 sheet_name = "telr"
 now = datetime.datetime.now()
 date = now.strftime("%m/%d/Y")
-ip_addr = os.system('hostname -i')
+ip_addr = ""
 repeat_time = 30
 
 pp = pprint.PrettyPrinter()
@@ -40,7 +41,7 @@ def parse_args() -> argparse.Namespace:
             )
     )
     parser.add_argument(
-        '--hover', '-h',
+        '--hover',
         action='store_true',
         help='\"Hover\" over the system and watch for changes and send them'
     )
@@ -191,9 +192,9 @@ def delete(ssid):
 
 def internet_on():
     try:
-        urllib2.urlopen('http://8.8.8.8', timeout=1)
+        urllib.urlopen('http://8.8.8.8', timeout=1)
         return True
-    except urllib2.URLError as err:
+    except urllib.URLError as err:
         return False
 
 
