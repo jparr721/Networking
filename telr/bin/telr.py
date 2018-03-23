@@ -53,15 +53,6 @@ def parse_args() -> argparse.Namespace:
         )
     )
     parser.add_argument(
-        '--list', '-l',
-        action='store_true',
-        help=(
-            'List current IP addresses in the sheet.\n'
-            'This can be done remotely as long as you\'re pointing'
-            'to the right sheet'
-        )
-    )
-    parser.add_argument(
         '--time', '-t',
         action='store',
         help=(
@@ -69,6 +60,14 @@ def parse_args() -> argparse.Namespace:
             '(Default: %d minutes)' % repeat_time
         ),
     )
+    subparsers = parser.add_subparsers(dest='cmd')
+
+    list_parser = subparsers.add_parser(
+        'list',
+        aliases=['ls'],
+        help='List all stored IP addresses',
+     )
+    list_parser.set_defaults(cmd=cmd_list)
 
     return parser.parse_args
 
@@ -81,7 +80,7 @@ def insert_ip():
     sheet.insert_row([date, ip_addr], 2, value_input_option='RAW')
 
 
-def list_entries():
+def cmd_list(args: argparse.Namespace):
     global sheet
 
     pp.pprint(sheet.get_all_values())
@@ -209,15 +208,17 @@ def main():
     if args.sheet:
         sheet_name = args.sheet
 
-    if args.list:
-        list_entries()
-
     if args.hover:
         scheduler = BlockingScheduler()
         scheduler.add_job(insert_ip, 'interval', minutes=repeat_time)
         scheduler.start()
     else:
         insert_ip()
+
+    if args.cmd is None:
+        return cmd_list(args)
+
+    return args.cmd(args)
 
 
 if __name__ == '__main__':
