@@ -48,17 +48,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--sheet', '-s',
         action='store',
-        help=(
-            'Specify the google spreadsheet to store data to'
-        )
+        help='Specify the google spreadsheet to store data to'
     )
     parser.add_argument(
         '--time', '-t',
         action='store',
-        help=(
-            'The amount of time (in minutes) before each ip posting'
-            '(Default: %d minutes)' % repeat_time
-        ),
+        help=('The amount of time (in minutes) before each ip posting'
+              '(Default: %d minutes)' % repeat_time),
     )
     subparsers = parser.add_subparsers(dest='cmd')
 
@@ -69,7 +65,7 @@ def parse_args() -> argparse.Namespace:
      )
     list_parser.set_defaults(cmd=cmd_list)
 
-    return parser.parse_args
+    return parser.parse_args()
 
 
 def insert_ip():

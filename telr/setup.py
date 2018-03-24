@@ -9,7 +9,8 @@ def read(fname):
 setup(
         name='telr',
         version='1.0.0',
-        install_requires=['gspread>=2.0.0', 'oauth2client>=4.1.2'],
+        install_requires=['gspread>=2.0.0', 'oauth2client>=4.1.2',
+                          'apscheduler>=3.5.1', 'wifi>=0.6.1'],
         scripts=['bin/telr'],
         author='Jarred Parr',
         author_email='jparr721@gmail.com',
