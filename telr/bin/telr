@@ -16,6 +16,8 @@ now = datetime.datetime.now()
 date = now.strftime("%m/%d/Y")
 ip_addr = ""
 repeat_time = 30
+ssid_list = []
+interface = ""
 
 pp = pprint.PrettyPrinter()
 scope = [
@@ -48,13 +50,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--sheet', '-s',
         action='store',
-        help='Specify the google spreadsheet to store data to'
+        help=('Specify the google spreadsheet to store data to'
+              '(Default: %s)' % sheet_name)
     )
     parser.add_argument(
         '--time', '-t',
         action='store',
         help=('The amount of time (in minutes) before each ip posting'
               '(Default: %d minutes)' % repeat_time),
+    )
+    parser.add_argument(
+        '--interface', '-i',
+        action='store',
+        help='The interface that is used to scan wifi'
     )
     subparsers = parser.add_subparsers(dest='cmd')
 
@@ -91,6 +99,22 @@ def wipe_entries():
 
 
 # Modules for snatching open wifi connections
+def catch_ssid():
+    global interface
+
+    ssid_list = [cell.ssid for cell in wifi.Cell.all(interface)]
+
+    schemes = list(wifi.Scheme.all())
+
+    for scheme in schemes:
+        ssid = scheme.options.get('wpa-ssid',
+                                  scheme.options.get('wireless-essid'))
+        if ssid in ssid_list:
+            print('Connecting to %s' % ssid)
+            scheme.activate()
+            break
+
+
 def search():
     wifilist = []
 
@@ -114,7 +138,7 @@ def find_from_search_list(ssid):
 
 
 def find_from_saved_list(ssid):
-    cell = wifi.Scheme.find('wlan0', ssid)
+    cell = wifi.Scheme.find(interface, ssid)
 
     if cell:
         return cell
@@ -167,7 +191,7 @@ def add(cell, password=None):
     if not cell:
         return False
 
-    scheme = wifi.Scheme.for_cell('wlan0', cell.ssid, cell, password)
+    scheme = wifi.Scheme.for_cell(interface, cell.ssid, cell, password)
     scheme.save()
     return scheme
 
@@ -195,11 +219,18 @@ def internet_on():
 
 def main():
     global sheet_name
+    global interface
 
     args = parse_args()
 
     if not internet_on:
-        connect_to_wifi('network')
+        print("Wifi grabbing functionality is experimental")
+        print("Because of this, you should always be hardwired if possible")
+        if args.interface:
+            interface = args.interface
+            catch_ssid()
+        else:
+            print("Error, please specify a wireless interface (-i)")
 
     if args.sheet:
         sheet_name = args.sheet

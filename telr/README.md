@@ -6,8 +6,10 @@ Commonly when I am out doing stuff I want to get the ip from my rpi3. This helps
 ## Compiling
 ### Requirements
 * Python 3 (2 is no good)
+* Preferably being hard-wired to a network, wifi autoconnect is experimental
 * Google docs API and Google Drive API
 * This project depends on `client_secret.json` which is renamed from the credential file you get when you register for the API
+* (For now) a debian based system (tested on rpi3)
 
 All other dependencies will be handled by the install script
 

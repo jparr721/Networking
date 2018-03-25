@@ -8,11 +8,11 @@ python_version = $(python -c 'import sys; print(sys.version_info[0])')
 # Check python version
 if [[ $python_version == "2" ]];
 then
-    sudo yum -y update
-    sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm 
-    sudo yum -y install python36u
-    sudo yum -y install python36u-pip
-    sudo pip3 install gspread oauth2client
+    sudo apt-get update && sudo apt-get upgrade -y
+    sudo apt-get install -y python3 python3-pip
+    sudo pip3 install gspread oauth2client apscheduler wifi
 else
-    echo "Evironment set up, you good playa"
+    sudo pip3 install gspread oauth2client apscheduler wifi
 fi
+
+echo "Evironment set up, you good playa"
