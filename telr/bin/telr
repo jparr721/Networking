@@ -215,6 +215,7 @@ def internet_on():
         return True
     except urllib.URLError as err:
         return False
+# End internet modules
 
 
 def main():
@@ -230,7 +231,7 @@ def main():
             interface = args.interface
             catch_ssid()
         else:
-            print("Error, please specify a wireless interface (-i)")
+            print("Internet connected!")
 
     if args.sheet:
         sheet_name = args.sheet
