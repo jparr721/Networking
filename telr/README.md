@@ -1,12 +1,13 @@
-  ```
- _____    _                 
-|_   _|  | |                
-  | | ___| |  ______   _ __ 
-  | |/ _ \ | |______| | '__|
-  | |  __/ |          | |   
-  \_/\___|_|          |_|   
-                                                      
-```                               
+ ```
+   ______     __                
+  /_  __/__  / /           _____
+   / / / _ \/ /  ______   / ___/
+  / / /  __/ /  /_____/  / /    
+ /_/  \___/_/           /_/     
+                               
+
+
+ ```
 python cron task to get the IP address of your tiny computer when you're hacking in the field.
 
 If you have access to your router's DHCP lease allocation table this isn't really needed. This is only for when you're, for instance, trying to initate some sort of attack on a public/private wifi network. You would ideally gain entrance to the network, log in with this computer, and then do some stuff.
