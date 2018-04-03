@@ -5,8 +5,6 @@
   / / /  __/ /  /_____/  / /    
  /_/  \___/_/           /_/     
                                
-
-
  ```
 python cron task to get the IP address of your tiny computer when you're hacking in the field.
 
