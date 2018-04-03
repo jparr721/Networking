@@ -1,9 +1,11 @@
   ```
-  ______     __                
- /_  __/__  / /           _____
-  / / / _ \/ /  ______   / ___/
- / / /  __/ /  /_____/  / /    
-/_/  \___/_/           /_/     
+ _____    _                 
+|_   _|  | |                
+  | | ___| |  ______   _ __ 
+  | |/ _ \ | |______| | '__|
+  | |  __/ |          | |   
+  \_/\___|_|          |_|   
+                                                      
 ```                               
 python cron task to get the IP address of your tiny computer when you're hacking in the field.
 
