@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
+#include <tuple>
 
 class Harvester {
 		private:
 				inline bool verify_harvester();
-				void get_whois_data(char*, char**);
-				int execute_whois_query(char*, char*, char**);
+                std::tuple<int, std::string> query(const std::string&, const std::string&);
 		public:
 				bool harvest_addr(std::string);
 };
