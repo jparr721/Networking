@@ -4,7 +4,7 @@ A GPU-based parallel processing system for launching brute force attacks and oth
 
 ## Compiling
 ### Requiremenets
-* CUDA enabled GPU or AMD
+* CUDA enabled NVIDIA GPU or AMD card
 * OpenCL v1.2 (Newer versions are forced to this one on compile)
 * A love for doing bad things
 
