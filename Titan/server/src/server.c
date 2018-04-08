@@ -15,6 +15,11 @@
 
 #define BACKLOG 100 // The max number of machines (100 should be plenty)
 
+struct host_information {
+	char* org_name;
+
+};
+
 void sigchld_handler(int s) {
 	// waitpid() could overrite errno, we need to save it
 	int saved_errno = errno;
@@ -23,6 +28,104 @@ void sigchld_handler(int s) {
 
 	errno = saved_errno;
 }
+
+int hostname_to_ip(char* hostname, char* ip) {
+	struct hostent *he;
+	struct in_addr **addr_list;
+	int i;
+
+	if ((he = gethostbyname(hostname)) == NULL) {
+		herror("gethostbyname");
+		return 1;
+	}
+
+	/** Add the host to the address list **/
+	addr_list = (struct in_addr**) he->h_addr_list;
+	for (i = 0; addr_list[i] != NULL; i++) {
+		// Grab the first host
+		// TODO - Fix deprecated ntoa
+		strcpy(ip, inet_ntoa(*addr_list[i])); 
+		return 0;
+	}
+	return 0;
+}
+
+int whois_query(char* server, char* query, char** response) {
+	char ip[32], message[100], buffer[1500];
+	int sock, read_size, total_size = 0;
+	struct sockaddr_in dest;
+
+	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+	memset(&dest, 0, sizeof(dest));
+	dest.sin_family = AF_INET;
+
+	printf("Resolving %s...", server);
+	if (hostname_to_ip(server, ip)) {
+		printf("Resolution failed...");
+		return 1;
+	}
+	printf("Resolved: %s", ip);
+	dest.sin_addr.s_addr = inet_addr(ip);
+	dest.sin_port = htons(43);
+
+	// Connect to remote server
+	if (connect(sock, (const struct sockaddr*)&dest, sizeof(dest))) {
+		perror("Connection failure");
+	}
+	printf("\nQuerying for... %s ...", query);
+	sprintf(message, "%s\r\n", query);
+	if (send(sock, message, strlen(message), 0) < 0) {
+		perror("send failed");
+	}
+
+	// Grab the response
+	while ((read_size = recv(sock, buffer, sizeof(buffer), 0))) {
+		*response = realloc(*response, read_size + total_size);
+		if (*response == NULL) {
+			printf("realloc failed");
+		}
+		memcpy(*response + total_size, buffer, read_size);
+		total_size += read_size;
+	}
+	printf("Done");
+	fflush(stdout);
+
+	*response = realloc(*response, total_size + 1);
+	*(*response + total_size) = '\0';
+
+	close(sock);
+	return 0;
+}
+
+void get_whois(char* ip, char** data) {
+	char *wch = NULL, *pch, *response = NULL;
+
+	if (whois_query("whois.iana.org", ip, &response)) {
+		printf("whois lookup failed");
+	}
+	pch = strtok(response, "\n");
+	while(pch != NULL) {
+		wch = strstr(pch, "whois.");
+		if (wch != NULL) {
+				break;
+		}
+		// Move to next line
+		pch = strtok(NULL, "\n");
+	}
+	
+
+	if (wch != NULL) {
+		printf("\nWhois server is: %s", &wch);
+		whois_query(wch, ip, data);
+	} else {
+		*data = malloc(100);
+		strcpy(*data, "No whois data");
+	}
+
+	return;
+}
+
 
 void *get_in_addr(struct sockaddr *saddr) {
 	if (saddr->sa_family == AF_INET) {
@@ -113,4 +216,16 @@ int server_loop() {
 		close(newfd);
 	}
 	return 0;
+}
+
+int main(int argc, char* argv[]) {
+	char ip[100], *data = NULL;
+	// strcpy(ip, "198.167.241.194");
+	strcpy(ip, "172.16.2.163");
+
+	get_whois(ip, &data);
+	puts(data);
+
+	free(data);
+	return 0;	
 }
