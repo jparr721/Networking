@@ -4,9 +4,11 @@
 #include "../include/reaper.hpp"
 #include "../include/detect.hpp"
 
-inline bool Reaper::load_kernel(std::string kernel_file_name) {
-	std::ifstream kernel_file(kernel_file_name);
-	
+inline std::string Reaper::load_kernel(const char* name) {
+	std::ifstream kernel_file(name);
+	std::string result((std::istreambuf_iterator<char> (kernel_file)), std::istreambuf_iterator<char>());	
+	std::cout << "Kenel loaded successfully!" << std::endl;
+	return result;
 }
 
 int main() {

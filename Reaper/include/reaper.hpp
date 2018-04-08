@@ -8,6 +8,5 @@
 
 class Reaper {
 private:
-	inline bool load_kernel(std::string);
-
+	inline std::string load_kernel(const char*);
 };

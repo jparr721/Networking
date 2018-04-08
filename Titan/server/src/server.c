@@ -16,8 +16,10 @@
 #define BACKLOG 100 // The max number of machines (100 should be plenty)
 
 struct host_information {
-	char* org_name;
-
+	struct in_addr ip;
+	char* whois_org;
+	char* system_name;
+	char* os_ver;
 };
 
 void sigchld_handler(int s) {
@@ -107,8 +109,13 @@ void get_whois(char* ip, char** data) {
 	pch = strtok(response, "\n");
 	while(pch != NULL) {
 		wch = strstr(pch, "whois.");
-		if (wch != NULL) {
-				break;
+		//if (wch != NULL) {
+		//		break;
+		//}
+		printf("\n%s", pch);
+		char* org = strstr(pch, "organisation");
+		if (org != NULL) {
+			printf(org);
 		}
 		// Move to next line
 		pch = strtok(NULL, "\n");
@@ -220,8 +227,7 @@ int server_loop() {
 
 int main(int argc, char* argv[]) {
 	char ip[100], *data = NULL;
-	// strcpy(ip, "198.167.241.194");
-	strcpy(ip, "172.16.2.163");
+	strcpy(ip, "77.65.12.44");
 
 	get_whois(ip, &data);
 	puts(data);
