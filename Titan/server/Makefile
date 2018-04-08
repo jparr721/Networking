@@ -8,4 +8,4 @@ tunnel.o: include/tunnel.h src/tunnel.c
 	gcc -c src/tunnel.c
 
 clean:
-	rm -f *.o
+	rm -f *.o cnc
