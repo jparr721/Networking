@@ -7,5 +7,8 @@ server.o: src/server.c
 tunnel.o: include/tunnel.h src/tunnel.c
 	gcc -c src/tunnel.c
 
+certificate.o: src/certificate.c include/certificate.h
+	gcc -c src/certificate.c
+
 clean:
 	rm -f *.o cnc
